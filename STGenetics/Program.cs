@@ -1,3 +1,6 @@
+using Application.Services;
+using Domain.Models;
+using Domain.Repositories;
 using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +16,7 @@ namespace STGenetics
 
             builder.Configuration.AddJsonFile("appsettings.json");
             var secretKey = builder.Configuration.GetSection("settings").GetSection("secretkey").ToString();
-            var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            var keyBytes = Encoding.UTF8.GetBytes(secretKey ?? string.Empty);
 
             builder.Services.AddAuthentication(config =>
             {
@@ -34,7 +37,14 @@ namespace STGenetics
 
             // Add services to the container.
             builder.Services.AddScoped<IJWTHandler, JWTHandler>();
+            builder.Services.AddScoped<IAnimalService, AnimalService>();
+            builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddControllers();
+
+            builder.Services.Configure<AppSettingsModel>(builder.Configuration.GetSection("settings"));
+
+            builder.Services.AddOptions();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

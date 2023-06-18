@@ -12,11 +12,11 @@ namespace STGenetics.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly string? secretKey;
+        readonly IJWTHandler _handler;
 
-        public AuthenticationController(IConfiguration config)
+        public AuthenticationController(IJWTHandler handler)
         {
-            secretKey = config.GetSection("settings").GetSection("secretkey").ToString();
+            _handler = handler;
         }
 
         [HttpPost]
@@ -25,31 +25,12 @@ namespace STGenetics.Controllers
         {
             if (request.Login == "string" && request.Password == "string")
             {
-                var keyBytes = Encoding.ASCII.GetBytes(secretKey);
-                var claims = new ClaimsIdentity();
+                string token = _handler.CreateToken(request.Login);
 
-                claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, request.Login));
-
-                var tokkenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = claims,
-                    Expires = DateTime.UtcNow.AddMinutes(5),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenConfig = tokenHandler.CreateToken(tokkenDescriptor);
-
-                string token = tokenHandler.WriteToken(tokenConfig);
-
-                return StatusCode(StatusCodes.Status200OK, new { token = token });
-
+                return StatusCode(StatusCodes.Status200OK, new { token });
             }
 
             return StatusCode(StatusCodes.Status401Unauthorized, new { token = string.Empty });
-
         }
-
     }
 }

@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Domain.Models;
 
 namespace Infrastructure.Authentication
 {
@@ -10,14 +12,14 @@ namespace Infrastructure.Authentication
     {
         private readonly string? secretKey;
 
-        public JWTHandler(IConfiguration config)
+        public JWTHandler(IOptions<AppSettingsModel> settings)
         {
-            secretKey = "Microsoft.Extensions.Configuration.ConfigurationSection";// config.GetSection("settings").GetSection("secretkey").ToString();
+            secretKey = settings.Value.Secretkey;
         }
 
         public string CreateToken(string login)
         {
-            var keyBytes = Encoding.ASCII.GetBytes(secretKey);
+            var keyBytes = Encoding.UTF8.GetBytes(secretKey ?? string.Empty);
             var claims = new ClaimsIdentity();
 
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, login));
