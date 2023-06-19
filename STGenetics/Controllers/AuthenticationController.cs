@@ -19,6 +19,11 @@ namespace STGenetics.Controllers
             _handler = handler;
         }
 
+        /// <summary>
+        /// Logs in with the provided credentials.
+        /// </summary>
+        /// <param name="request">The user credentials.</param>
+        /// <returns>The session token if was a succesful login.</returns>
         [HttpPost]
         [Route("Login")]
         public IActionResult Login([FromBody] User request)

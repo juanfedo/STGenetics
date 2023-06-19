@@ -15,6 +15,11 @@ namespace STGenetics.Controllers
             _orderService = orderService;
         }
 
+        /// <summary>
+        /// Creates an order with the provided order details.
+        /// </summary>
+        /// <param name="order">The order details.</param>
+        /// <returns>The order Id and the total purchase amount</returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Order([FromBody] OrderRequest order)

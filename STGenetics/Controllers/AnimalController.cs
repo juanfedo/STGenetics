@@ -2,7 +2,6 @@
 using Application.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static Application.Enums.FilterEnums;
 
@@ -19,7 +18,11 @@ namespace STGenetics.Controllers
             _animalService = animalService;
         }
 
-
+        /// <summary>
+        /// Create a new animal
+        /// </summary>
+        /// <param name="animal">The details of the new animal.</param>
+        /// <returns>The id for the new animal</returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateAnimal(Animal animal)
@@ -35,6 +38,11 @@ namespace STGenetics.Controllers
             }
         }
 
+        /// <summary>
+        /// Update a existing animal
+        /// </summary>
+        /// <param name="animal">The updated details of the animal</param>
+        /// <returns>200 if was a successful operation</returns>
         [HttpPut()]
         [Authorize]
         public async Task<IActionResult> UpdateAnimal(Animal animal)
@@ -55,7 +63,11 @@ namespace STGenetics.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Delete a existing animal
+        /// </summary>
+        /// <param name="animalId">Id of the animal</param>
+        /// <returns>200 if was a successful operation</returns>
         [HttpDelete("{animalId}")]
         [Authorize]
         public async Task<IActionResult> DeleteAnimal(int animalId)
@@ -76,6 +88,12 @@ namespace STGenetics.Controllers
             }
         }
 
+        /// <summary>
+        /// Filter animals by AnimalId, Name, Sex, Status
+        /// </summary>
+        /// <param name="filter">AnimalFilter enumerator</param>
+        /// <param name="value">Any value to search</param>
+        /// <returns>List of objects that satisfy the condition</returns>
         [HttpGet()]
         [Authorize]
         public async Task<IActionResult> FilterAnimals(AnimalFilter filter, string value)
