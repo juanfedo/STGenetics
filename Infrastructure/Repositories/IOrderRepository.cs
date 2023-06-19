@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Domain.Repositories
+namespace Infrastructure.Repositories
 {
     public interface IOrderRepository
     {

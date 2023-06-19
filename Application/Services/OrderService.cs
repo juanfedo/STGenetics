@@ -2,7 +2,7 @@
 using Application.Entities;
 using Application.Extensions;
 using Domain.Models;
-using Domain.Repositories;
+using Infrastructure.Repositories;
 
 namespace Application.Services
 {

@@ -21,6 +21,7 @@ namespace STGenetics.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateAnimal(Animal animal)
         {
             try
@@ -35,6 +36,7 @@ namespace STGenetics.Controllers
         }
 
         [HttpPut()]
+        [Authorize]
         public async Task<IActionResult> UpdateAnimal(Animal animal)
         {
             try
@@ -55,6 +57,7 @@ namespace STGenetics.Controllers
 
 
         [HttpDelete("{animalId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteAnimal(int animalId)
         {
             try
@@ -74,6 +77,7 @@ namespace STGenetics.Controllers
         }
 
         [HttpGet()]
+        [Authorize]
         public async Task<IActionResult> FilterAnimals(AnimalFilter filter, string value)
         {
             try

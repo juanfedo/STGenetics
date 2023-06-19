@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Domain.Models;
+using Infrastructure.Entities;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Domain.Repositories
+namespace Infrastructure.Repositories
 {
     public class AnimalRepository : IAnimalRepository
     {

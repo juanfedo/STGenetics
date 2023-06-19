@@ -1,7 +1,7 @@
 ﻿using Application.DTO;
 using Application.Validation;
 using Domain.Models;
-using Domain.Repositories;
+using Infrastructure.Repositories;
 using static Application.Enums.FilterEnums;
 
 namespace Application.Services

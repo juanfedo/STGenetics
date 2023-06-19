@@ -16,6 +16,7 @@ namespace STGenetics.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Order([FromBody] OrderRequest order)
         {
             int totalAmount = 0;

@@ -1,4 +1,4 @@
-﻿namespace Domain.Models
+﻿namespace Infrastructure.Entities
 {
     public class AppSettingsModel
     {

@@ -1,7 +1,7 @@
 using Application.Services;
-using Domain.Models;
-using Domain.Repositories;
 using Infrastructure.Authentication;
+using Infrastructure.Entities;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
