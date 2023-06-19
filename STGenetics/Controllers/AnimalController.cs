@@ -1,7 +1,9 @@
-﻿using Application.Services;
+﻿using Application.DTO;
+using Application.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Application.Enums.FilterEnums;
 
 namespace STGenetics.Controllers
 {
@@ -70,23 +72,22 @@ namespace STGenetics.Controllers
             }
         }
 
-        /*
-
-        [HttpGet("filter")]
-        public IActionResult FilterAnimals(int? animalId, string name, string sex, string status)
+        [HttpGet()]
+        public async Task<IActionResult> FilterAnimals(AnimalFilter filter, string value)
         {
-            var filteredAnimals = animalRepository.GetAnimalsOlderThanTwoYearsAndFemaleSortedByName();
-            // Aplicar los filtros correspondientes según los parámetros proporcionados
-            return Ok(filteredAnimals);
+            try
+            {
+                var filteredAnimals = await _animalService.FilterAnimalAsync(new AnimalFilterRequest()
+                {
+                    Filter = filter,
+                    Value = value
+                });
+                return Ok(filteredAnimals);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
-
-        [HttpPost("order")]
-        public IActionResult CreateOrder(OrderRequest orderRequest)
-        {
-            // Lógica para procesar la orden de compra según las reglas de negocio mencionadas
-            // y guardarla en la base de datos
-            return Ok(new OrderResponse { Id = orderId, TotalAmount = totalAmount });
-        }*/
-
     }
 }

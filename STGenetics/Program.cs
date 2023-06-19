@@ -4,7 +4,9 @@ using Domain.Repositories;
 using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace STGenetics
 {
@@ -38,8 +40,10 @@ namespace STGenetics
             // Add services to the container.
             builder.Services.AddScoped<IJWTHandler, JWTHandler>();
             builder.Services.AddScoped<IAnimalService, AnimalService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
-            builder.Services.AddControllers();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             builder.Services.Configure<AppSettingsModel>(builder.Configuration.GetSection("settings"));
 

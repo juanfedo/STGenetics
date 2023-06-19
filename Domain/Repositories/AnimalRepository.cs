@@ -3,6 +3,7 @@ using Domain.Models;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Domain.Repositories
 {
@@ -19,20 +20,10 @@ namespace Domain.Repositories
         {
             using (SqlConnection con = new(_connectionString))
             {
-                con.Open();
-
-                SqlTransaction sqltrans = con.BeginTransaction();
-
-                var param = new DynamicParameters();
-                param.Add("@Name", animal.Name);
-                param.Add("@Breed", animal.Breed);
-                param.Add("@BirthDate", animal.BirthDate);
-                param.Add("@Sex", animal.Sex);
-                param.Add("@Price", animal.Price);
-                param.Add("@Status", animal.Status);
+                var param = SetParameters(animal);
                 param.Add("@retID", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                var res = await con.ExecuteAsync("SP_InsertAnimal", param, sqltrans, 0, CommandType.StoredProcedure);
+                var res = await con.ExecuteAsync("SP_InsertAnimal", param, commandType: CommandType.StoredProcedure);
                 var createID = param.Get<int>("@retID");
 
                 return createID;
@@ -48,19 +39,9 @@ namespace Domain.Repositories
                     return false;
                 }
 
-                con.Open();
+                var param = SetParameters(animal);
 
-                SqlTransaction sqltrans = con.BeginTransaction();
-
-                var param = new DynamicParameters();
-                param.Add("@Name", animal.Name);
-                param.Add("@Breed", animal.Breed);
-                param.Add("@BirthDate", animal.BirthDate);
-                param.Add("@Sex", animal.Sex);
-                param.Add("@Price", animal.Price);
-                param.Add("@Status", animal.Status);
-                param.Add("@retID", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                _ = await con.ExecuteAsync("SP_UpdateAnimal", param, sqltrans, 0, CommandType.StoredProcedure);
+                await con.QueryAsync("SP_UpdateAnimal", param, commandType: CommandType.StoredProcedure);
 
                 return true;
             }
@@ -68,11 +49,7 @@ namespace Domain.Repositories
 
         private static bool AnimalExits(int animalId, SqlConnection con)
         {
-            con.Open();
-
             var animal = con.QueryFirstOrDefault<Animal>("SELECT * FROM Animal WHERE AnimalId = @animalId", param: new { animalId });
-
-            con.Close();
 
             return animal != null;
         }
@@ -86,14 +63,47 @@ namespace Domain.Repositories
                     return false;
                 }
 
-                con.Open();
-
-                _ = await con.QueryAsync<Animal>("DELETE FROM Animal WHERE AnimalId = @animalId", param: new { animalId });
+                await con.QueryAsync<Animal>("DELETE FROM Animal WHERE AnimalId = @animalId", param: new { animalId });
 
                 return true;
             }
         }
 
-    }
+        public async Task<float> PriceByAnimalAsync(int animalId)
+        {
+            using (SqlConnection con = new(_connectionString))
+            {
+                var sql = "SELECT Price FROM [Animal] WHERE AnimalId = @animalId";
 
+                var priceByAnimal = await con.ExecuteScalarAsync<float>(sql, param: new { animalId });
+
+                return priceByAnimal;
+            }
+        }
+
+        public async Task<List<Animal>> FilterAnimalAsync(string column, string? value)
+        {
+            using (SqlConnection con = new(_connectionString))
+            {
+                var sql = $"SELECT * FROM [Animal] WHERE {column} = @Value";
+
+                var animals = await con.QueryAsync<Animal>(sql, param: new { Value = value?.Trim().ToLower() });
+
+                return animals.ToList();
+            }
+        }
+
+        private static DynamicParameters SetParameters(Animal animal)
+        {
+            var param = new DynamicParameters();
+            param.Add("@Name", animal.Name);
+            param.Add("@Breed", animal.Breed);
+            param.Add("@BirthDate", animal.BirthDate);
+            param.Add("@Sex", animal.Sex);
+            param.Add("@Price", animal.Price);
+            param.Add("@Status", animal.Status);
+
+            return param;
+        }
+    }
 }

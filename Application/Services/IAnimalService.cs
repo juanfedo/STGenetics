@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.DTO;
+using Domain.Models;
 
 namespace Application.Services
 {
@@ -7,6 +8,7 @@ namespace Application.Services
         Task<int> CreateAnimalAsync(Animal animal);
         Task<bool> UpdateAnimalAsync(Animal animal);
         Task<bool> DeleteAnimalAsync(int animalId);
-        int FilterAnimal(Animal animal);
+        Task<List<Animal>> FilterAnimalAsync(AnimalFilterRequest request);
+        Task<float> PriceByAnimalAsync(int animalId);
     }
 }
