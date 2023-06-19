@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.Services;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static Application.Enums.FilterEnums;
@@ -17,7 +18,7 @@ namespace STGenetics.Controllers
         {
             _animalService = animalService;
         }
-        
+
 
         [HttpPost]
         public async Task<IActionResult> CreateAnimal(Animal animal)

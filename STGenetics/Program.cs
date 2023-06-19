@@ -4,7 +4,6 @@ using Domain.Repositories;
 using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -43,7 +42,9 @@ namespace STGenetics
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+            builder.Services.AddControllers().AddJsonOptions(options => { 
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Display enum as strings
+            });  
 
             builder.Services.Configure<AppSettingsModel>(builder.Configuration.GetSection("settings"));
 

@@ -1,10 +1,9 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Domain.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Domain.Models;
 
 namespace Infrastructure.Authentication
 {
@@ -30,7 +29,6 @@ namespace Infrastructure.Authentication
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
-
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenConfig = tokenHandler.CreateToken(tokkenDescriptor);

@@ -3,7 +3,6 @@ using Domain.Models;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace Domain.Repositories
 {
@@ -40,6 +39,7 @@ namespace Domain.Repositories
                 }
 
                 var param = SetParameters(animal);
+                param.Add("@AnimalId", animal.AnimalId);
 
                 await con.QueryAsync("SP_UpdateAnimal", param, commandType: CommandType.StoredProcedure);
 
