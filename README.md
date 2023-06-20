@@ -3,9 +3,11 @@ Technical test by Julian Andres Fernandez Dominguez
 Sql Requirements:
 
 --1
+
 CREATE DATABASE STGenetics;
 
 --2
+
 USE STGenetics;
 
 CREATE TABLE Animal (
@@ -20,6 +22,7 @@ CREATE TABLE Animal (
 
 
 --3
+
 CREATE PROCEDURE SP_InsertAnimal
     @Name VARCHAR(100),
     @Breed VARCHAR(100),
@@ -61,6 +64,7 @@ DELETE FROM Animal
 WHERE AnimalId = 1;
 
 --4
+
 DECLARE @i INT = 1;
 DECLARE @sex VARCHAR(10);
 DECLARE @birthDate DATE;
@@ -81,12 +85,14 @@ BEGIN
 END
 
 --5
+
 SELECT *
 FROM Animal
 WHERE BirthDate <= DATEADD(YEAR, -2, GETDATE()) AND Sex = 'female'
 ORDER BY Name;
 
 --6
+
 SELECT Sex, COUNT(*) AS Quantity
 FROM Animal
 GROUP BY Sex;
