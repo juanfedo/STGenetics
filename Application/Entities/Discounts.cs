@@ -10,10 +10,10 @@
                 _ => (amount, price)
             };
 
-        public static (int, float) BulkDiscount(int amount, float price) =>
+        public static (int, float) FreightDiscount(int amount, float price) =>
             amount switch
             {
-                <= 300 => (amount, price + 1000),
+                <= 300 => (amount, price + Constants.Constants.FREIGHT),
                 _ => (amount, price)
             };
     }

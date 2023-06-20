@@ -25,11 +25,11 @@ namespace STGenetics.Controllers
         /// <returns>The id for the new animal</returns>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateAnimal(Animal animal)
+        public async Task<IActionResult> CreateAnimal(Animal animal, CancellationToken cancellationToken)
         {
             try
             {
-                var newAnimalId = await _animalService.CreateAnimalAsync(animal);
+                var newAnimalId = await _animalService.CreateAnimalAsync(animal, cancellationToken);
                 return Ok(newAnimalId);
             }
             catch (Exception ex)
@@ -45,11 +45,11 @@ namespace STGenetics.Controllers
         /// <returns>200 if was a successful operation</returns>
         [HttpPut()]
         [Authorize]
-        public async Task<IActionResult> UpdateAnimal(Animal animal)
+        public async Task<IActionResult> UpdateAnimal(Animal animal, CancellationToken cancellationToken)
         {
             try
             {
-                var resultOperation = await _animalService.UpdateAnimalAsync(animal);
+                var resultOperation = await _animalService.UpdateAnimalAsync(animal, cancellationToken);
                 if (!resultOperation)
                 {
                     return StatusCode(404, "Animal doesn´t exists in database");
@@ -70,11 +70,11 @@ namespace STGenetics.Controllers
         /// <returns>200 if was a successful operation</returns>
         [HttpDelete("{animalId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteAnimal(int animalId)
+        public async Task<IActionResult> DeleteAnimal(int animalId, CancellationToken cancellationToken)
         {
             try
             {
-                var resultOperation = await _animalService.DeleteAnimalAsync(animalId);
+                var resultOperation = await _animalService.DeleteAnimalAsync(animalId, cancellationToken);
                 if (!resultOperation)
                 {
                     return StatusCode(404, "Animal doesn´t exists in database");
@@ -96,7 +96,7 @@ namespace STGenetics.Controllers
         /// <returns>List of objects that satisfy the condition</returns>
         [HttpGet()]
         [Authorize]
-        public async Task<IActionResult> FilterAnimals(AnimalFilter filter, string value)
+        public async Task<IActionResult> FilterAnimals(AnimalFilter filter, string value, CancellationToken cancellationToken)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace STGenetics.Controllers
                 {
                     Filter = filter,
                     Value = value
-                });
+                }, cancellationToken);
                 return Ok(filteredAnimals);
             }
             catch (Exception ex)

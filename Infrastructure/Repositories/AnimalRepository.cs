@@ -16,25 +16,25 @@ namespace Infrastructure.Repositories
             this._connectionString = settings.Value.DbConnection;
         }
 
-        public async Task<int> CreateAnimalAsync(Animal animal)
+        public async Task<int> CreateAnimalAsync(Animal animal, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
                 var param = SetParameters(animal);
                 param.Add("@retID", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                var res = await con.ExecuteAsync("SP_InsertAnimal", param, commandType: CommandType.StoredProcedure);
+                var res = await con.ExecuteAsync(new CommandDefinition("SP_InsertAnimal", param, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken));
                 var createID = param.Get<int>("@retID");
 
                 return createID;
             }
         }
 
-        public async Task<bool> UpdateAnimalAsync(Animal animal)
+        public async Task<bool> UpdateAnimalAsync(Animal animal, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
-                if (!AnimalExits(animal.AnimalId, con))
+                if (!await AnimalExitsAsync(animal.AnimalId, con, cancellationToken))
                 {
                     return false;
                 }
@@ -42,53 +42,53 @@ namespace Infrastructure.Repositories
                 var param = SetParameters(animal);
                 param.Add("@AnimalId", animal.AnimalId);
 
-                await con.QueryAsync("SP_UpdateAnimal", param, commandType: CommandType.StoredProcedure);
+                await con.QueryAsync(new CommandDefinition ("SP_UpdateAnimal", param, commandType: CommandType.StoredProcedure, cancellationToken : cancellationToken));
 
                 return true;
             }
         }
 
-        private static bool AnimalExits(int animalId, SqlConnection con)
+        private async Task<bool> AnimalExitsAsync(int animalId, SqlConnection con, CancellationToken cancellationToken)
         {
-            var animal = con.QueryFirstOrDefault<Animal>("SELECT * FROM Animal WHERE AnimalId = @animalId", param: new { animalId });
+            var animal = await con.QueryAsync<Animal>(new CommandDefinition("SELECT * FROM Animal WHERE AnimalId = @animalId", parameters: new { animalId }, cancellationToken: cancellationToken));
 
             return animal != null;
         }
 
-        public async Task<bool> DeleteAnimalAsync(int animalId)
+        public async Task<bool> DeleteAnimalAsync(int animalId, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
-                if (!AnimalExits(animalId, con))
+                if (!await AnimalExitsAsync(animalId, con, cancellationToken))
                 {
                     return false;
                 }
 
-                await con.QueryAsync<Animal>("DELETE FROM Animal WHERE AnimalId = @animalId", param: new { animalId });
+                await con.QueryAsync<Animal>(new CommandDefinition("DELETE FROM Animal WHERE AnimalId = @animalId", parameters: new { animalId }, cancellationToken: cancellationToken));
 
                 return true;
             }
         }
 
-        public async Task<float> PriceByAnimalAsync(int animalId)
+        public async Task<float> PriceByAnimalAsync(int animalId, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
                 var sql = "SELECT Price FROM [Animal] WHERE AnimalId = @animalId";
 
-                var priceByAnimal = await con.ExecuteScalarAsync<float>(sql, param: new { animalId });
+                var priceByAnimal = await con.ExecuteScalarAsync<float>(new CommandDefinition(sql, parameters: new { animalId }, cancellationToken: cancellationToken));
 
                 return priceByAnimal;
             }
         }
 
-        public async Task<List<Animal>> FilterAnimalAsync(string column, string? value)
+        public async Task<List<Animal>> FilterAnimalAsync(string column, string? value, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
                 var sql = $"SELECT * FROM [Animal] WHERE {column} = @Value";
 
-                var animals = await con.QueryAsync<Animal>(sql, param: new { Value = value?.Trim().ToLower() });
+                var animals = await con.QueryAsync<Animal>(new CommandDefinition(sql, parameters: new { Value = value?.Trim().ToLower() }, cancellationToken: cancellationToken));
 
                 return animals.ToList();
             }

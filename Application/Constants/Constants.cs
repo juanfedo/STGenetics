@@ -18,5 +18,6 @@
         public const string NAME = "Name";
         public const string SEX = "Sex";
         public const string STATUS = "Status";
+        public const int FREIGHT = 1000;
     }
 }

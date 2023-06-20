@@ -4,10 +4,10 @@ namespace Infrastructure.Repositories
 {
     public interface IAnimalRepository
     {
-        Task<bool> DeleteAnimalAsync(int animalId);
-        Task<int> CreateAnimalAsync(Animal animal);
-        Task<bool> UpdateAnimalAsync(Animal animal);
-        Task<float> PriceByAnimalAsync(int animalId);
-        Task<List<Animal>> FilterAnimalAsync(string column, string? value);
+        Task<bool> DeleteAnimalAsync(int animalId, CancellationToken cancellationToken);
+        Task<int> CreateAnimalAsync(Animal animal, CancellationToken cancellationToken);
+        Task<bool> UpdateAnimalAsync(Animal animal, CancellationToken cancellationToken);
+        Task<float> PriceByAnimalAsync(int animalId, CancellationToken cancellationToken);
+        Task<List<Animal>> FilterAnimalAsync(string column, string? value, CancellationToken cancellationToken);
     }
 }

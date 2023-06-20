@@ -1,4 +1,6 @@
-﻿namespace Application.Validation
+﻿using Application.Constants;
+
+namespace Application.Validation
 {
     public static class ValidateInput
     {

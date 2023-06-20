@@ -4,7 +4,7 @@ namespace Infrastructure.Repositories
 {
     public interface IOrderRepository
     {
-        Task<int> CreateOrderAsync();
-        Task<int> CreateOrderDetailAsync(OrderDetail orderDetail);
+        Task<int> CreateOrderAsync(CancellationToken cancellationToken);
+        Task<int> CreateOrderDetailAsync(OrderDetail orderDetail, CancellationToken cancellationToken);
     }
 }

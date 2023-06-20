@@ -14,19 +14,19 @@ namespace Infrastructure.Repositories
         {
             this._connectionString = settings.Value.DbConnection;
         }
-        public async Task<int> CreateOrderAsync()
+        public async Task<int> CreateOrderAsync(CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
                 var sql = "INSERT INTO [Order] (TotalAmount, TotalPrice) VALUES (0, 0); SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                int newOrderId = (int)await con.ExecuteScalarAsync(sql);
+                int newOrderId = (int)await con.ExecuteScalarAsync(new CommandDefinition(sql, cancellationToken : cancellationToken));
 
                 return newOrderId;
             }
         }
 
-        public async Task<int> CreateOrderDetailAsync(OrderDetail orderDetail)
+        public async Task<int> CreateOrderDetailAsync(OrderDetail orderDetail, CancellationToken cancellationToken)
         {
             using (SqlConnection con = new(_connectionString))
             {
@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
                     orderDetail.Amount,
                 };
 
-                var newOrderDetailId = (int)await con.ExecuteScalarAsync(sql, param);
+                var newOrderDetailId = (int)await con.ExecuteScalarAsync(new CommandDefinition(sql, param, cancellationToken : cancellationToken));
 
                 return newOrderDetailId;
             }

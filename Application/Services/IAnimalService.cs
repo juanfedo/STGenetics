@@ -5,10 +5,10 @@ namespace Application.Services
 {
     public interface IAnimalService
     {
-        Task<int> CreateAnimalAsync(Animal animal);
-        Task<bool> UpdateAnimalAsync(Animal animal);
-        Task<bool> DeleteAnimalAsync(int animalId);
-        Task<List<Animal>> FilterAnimalAsync(AnimalFilterRequest request);
-        Task<float> PriceByAnimalAsync(int animalId);
+        Task<int> CreateAnimalAsync(Animal animal, CancellationToken cancellationToken);
+        Task<bool> UpdateAnimalAsync(Animal animal, CancellationToken cancellationToken);
+        Task<bool> DeleteAnimalAsync(int animalId, CancellationToken cancellationToken);
+        Task<List<Animal>> FilterAnimalAsync(AnimalFilterRequest request, CancellationToken cancellationToken);
+        Task<float> PriceByAnimalAsync(int animalId, CancellationToken cancellationToken);
     }
 }

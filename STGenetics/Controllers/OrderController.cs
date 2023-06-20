@@ -22,7 +22,7 @@ namespace STGenetics.Controllers
         /// <returns>The order Id and the total purchase amount</returns>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Order([FromBody] OrderRequest order)
+        public async Task<IActionResult> Order([FromBody] OrderRequest order, CancellationToken cancellationToken)
         {
             int totalAmount = 0;
             float totalPrice = 0;
@@ -31,23 +31,14 @@ namespace STGenetics.Controllers
             {
                 if (order.Details != null)
                 {
-                    var duplicateAnimals = order.Details.GroupBy(c => new {c.AnimalId})
-                        .Where(g => g.Count() > 1)
-                        .ToList();
-
-                    if (duplicateAnimals.Any())
-                    {
-                        return StatusCode(400, "It's not allowed to duplicate the animal in the Order");
-                    }
-
-                    var orderId = await _orderService.CreateOrderAsync();
+                    var orderId = await _orderService.CreateOrderAsync(cancellationToken);
 
                     foreach (var detail in order.Details)
                     {
-                        var result = await _orderService.CalculateTotalPriceAsync(detail);
+                        var result = await _orderService.CalculateTotalPriceAsync(detail, cancellationToken);
                         totalAmount += result.Item1;
                         totalPrice += result.Item2;
-                        await _orderService.CreateOrderDetailAsync(orderId, detail);
+                        await _orderService.CreateOrderDetailAsync(orderId, detail, cancellationToken);
                     }
 
                     return Ok(new { OrderId = orderId, TotalAmount = totalAmount, TotalPrice = totalPrice });

@@ -17,23 +17,23 @@ namespace Application.Services
             this._animalRepository = animalRepository;
         }
 
-        public async Task<int> CreateOrderAsync() =>
-            await _orderRepository.CreateOrderAsync();
+        public async Task<int> CreateOrderAsync(CancellationToken cancellationToken) =>
+            await _orderRepository.CreateOrderAsync(cancellationToken);
 
-        public async Task<int> CreateOrderDetailAsync(int orderId, OrderDetailRequest orderDetail) =>
+        public async Task<int> CreateOrderDetailAsync(int orderId, OrderDetailRequest orderDetail, CancellationToken cancellationToken) =>
             await _orderRepository.CreateOrderDetailAsync(new OrderDetail()
             {
                 OrderId = orderId,
                 Amount = orderDetail.Amount,
                 AnimalId = orderDetail.AnimalId
-            });
+            }, cancellationToken);
 
-        public async Task<(int, float)> CalculateTotalPriceAsync(OrderDetailRequest orderDetail)
+        public async Task<(int, float)> CalculateTotalPriceAsync(OrderDetailRequest orderDetail, CancellationToken cancellationToken)
         {
-           var price = await _animalRepository.PriceByAnimalAsync(orderDetail.AnimalId);
+           var price = await _animalRepository.PriceByAnimalAsync(orderDetail.AnimalId, cancellationToken);
            return (orderDetail.Amount, price)
                 .Pipe(Discounts.QuantityDiscount)
-                .Pipe(Discounts.BulkDiscount);
+                .Pipe(Discounts.FreightDiscount);
         }
     }
 }
